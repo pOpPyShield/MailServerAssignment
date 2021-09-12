@@ -33,6 +33,8 @@ public class HomePanelOfClientUI extends JPanel{
 	private JLabel typeOf;
 	private JTextArea jt;
 	private JTextArea tf;
+	private JList list;
+	private JList list2;
 	public HomePanelOfClientUI(LoginPanelOfClientUI lgPanel){
 		lgPanelOfClientUI = lgPanel;
 		setLayout(new BorderLayout());
@@ -78,17 +80,22 @@ public class HomePanelOfClientUI extends JPanel{
 			JPanel panelRight = new JPanel();
 			panelRight.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 0));
 			panelRight.setLayout(new GridLayout(2, 0));
+
+				String categories[] = {"Household", "Office", "Extended Family", "Company (US)", "Company (World)", "Team", "Will", "Birthday Card List", "High School", "Country", "Continent", "Planet"};
+				list = new JList(categories);
+
+				String categories2[] = {"Household", "Office", "Extended Family", "Company (US)", "Company (World)", "Team", "Will", "Birthday Card List", "High School", "Country", "Continent", "Planet"};
+				list2 = new JList(categories2);
 				JPanel panelFriend = new JPanel();
 				panelFriend.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 				panelFriend.setLayout(new BorderLayout(10,0));
 				panelFriend.add(new JLabel("Friend: ", SwingConstants.LEFT), BorderLayout.PAGE_START);
-				String categories[] = {"Household", "Office", "Extended Family", "Company (US)", "Company (World)", "Team", "Will", "Birthday Card List", "High School", "Country", "Continent", "Planet"};
-				JList list = new JList(categories);
 				list.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
 						if(e.getClickCount() == 2) {
 							String selectedItem = (String) list.getSelectedValue();
 							typeOf.setText("Send to: ");
+							list2.clearSelection();
 							nameOfFriend.setText(selectedItem);
 						}
 					}
@@ -100,8 +107,6 @@ public class HomePanelOfClientUI extends JPanel{
 				JPanel panelEmail = new JPanel();
 				panelEmail.setLayout(new BorderLayout(10, 0));
 				panelEmail.add(new JLabel("Email: ", SwingConstants.LEFT), BorderLayout.PAGE_START);
-				String categories2[] = {"Household", "Office", "Extended Family", "Company (US)", "Company (World)", "Team", "Will", "Birthday Card List", "High School", "Country", "Continent", "Planet"};
-				JList list2 = new JList(categories);
 				list2.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
 						if(e.getClickCount() == 2) {
@@ -121,5 +126,12 @@ public class HomePanelOfClientUI extends JPanel{
 		add(panelCenter, BorderLayout.CENTER);
 	}
 		
-	private class MouseListenerList imple 
+	private class MouseListenerJList extends MouseAdapter{
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if(e.getClickCount() == 2) {
+
+			}
+		}
+	}
 }
