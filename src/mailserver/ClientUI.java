@@ -15,10 +15,6 @@ import javax.swing.JPanel;
  * @author huygrogbro
  */
 public class ClientUI extends JFrame{
-	String titleOfClientUI;
-	public String getTitleOfClientUI() {
-		return titleOfClientUI;
-	}
 
 	public void updateUI(String titleOfClientUI, Container container, int width, int height) {
 		this.setTitle(titleOfClientUI);
