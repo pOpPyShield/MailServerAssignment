@@ -40,7 +40,7 @@ public class LoginPanelOfClientUI extends JPanel{
 		this.isLogin = isLogin;
 		System.out.println(isLogin);
 		if(isLogin) {
-			clientUI.updateUI(HomePanelOfClientUI.titleOfLoginPanel, new HomePanelOfClientUI(), 700,800);
+			clientUI.updateUI(HomePanelOfClientUI.titleOfLoginPanel, new HomePanelOfClientUI(this), 900,600);
 		}
 	}
 
