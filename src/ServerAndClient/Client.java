@@ -5,10 +5,25 @@
  */
 package ServerAndClient;
 
+import java.io.IOException;
+import java.net.Socket;
+
 /**
  *
  * @author huygrogbro
  */
-public class Client {
-	
+public class Client extends Socket{
+    private String nameUser;
+
+    public Client(String nameUserArg) throws IOException {
+        super("localhost",1234);
+        nameUser = nameUserArg;
+    }
+
+    public Client() {
+    }
+    @Override
+    public String toString() {
+        return nameUser;
+    }
 }

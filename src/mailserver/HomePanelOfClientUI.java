@@ -5,11 +5,15 @@
  */
 package mailserver;
 
+import ServerAndClient.Client;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.net.Socket;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -35,8 +39,17 @@ public class HomePanelOfClientUI extends JPanel{
 	private JTextArea tf;
 	private JList list;
 	private JList list2;
+	private Client clientCreate;
+	private void initializeSocket() {
+		try {
+			clientCreate = new Client(lgPanelOfClientUI.getUserName().getText());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	public HomePanelOfClientUI(LoginPanelOfClientUI lgPanel){
 		lgPanelOfClientUI = lgPanel;
+		initializeSocket();
 		setLayout(new BorderLayout());
 		JPanel topPanel = new JPanel();
 		topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -124,14 +137,5 @@ public class HomePanelOfClientUI extends JPanel{
 			panelCenter.add(panelRight, BorderLayout.LINE_END);
 		
 		add(panelCenter, BorderLayout.CENTER);
-	}
-		
-	private class MouseListenerJList extends MouseAdapter{
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			if(e.getClickCount() == 2) {
-
-			}
-		}
 	}
 }

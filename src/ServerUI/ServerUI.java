@@ -1,5 +1,6 @@
 package ServerUI;
 
+import ServerAndClient.Server;
 import mailserver.LoginPanelOfClientUI;
 
 import javax.swing.*;
@@ -9,6 +10,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -17,15 +20,49 @@ public class ServerUI extends JFrame {
     private JLabel displayIp;
     private JLabel displayPort;
     private JTree treeUser;
-
+    private DefaultMutableTreeNode root;
+    private Server serverSocket;
     private void initializeJTree() {
         //Working with root node
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("User");
+        root = new DefaultMutableTreeNode("User");
         DefaultMutableTreeNode testUser = new DefaultMutableTreeNode("User1");
         root.add(testUser);
         treeUser = new JTree(root);
     }
+    private void writeToFile(String pathToFile) {
+        try {
+            FileWriter myWriter = new FileWriter(pathToFile);
+            myWriter.write("Thank you for using this service. we hope that you will feel comfortabl........");
+            myWriter.close();
+            System.out.println("Successfully wrote to the file");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+    }
+    public void addToTree(String nameUSer) {
+        DefaultMutableTreeNode userDir = new DefaultMutableTreeNode(nameUSer);
+        File theDir = new File("/home/huygrogbro/MailServer/" + nameUSer);
+        if(!theDir.exists()) {
+            theDir.mkdir();
+            String welcomFilePath = "/home/huygrogbro/MailServer/" + nameUSer + "/new_email.txt";
+            File welcomFile = new File(welcomFilePath);
+            try {
+                if(welcomFile.createNewFile()) {
+                    writeToFile(welcomFilePath);
+                    jt.append("File created for: " + nameUSer);
+                } else {
+                    jt.append("Create failed for: " + nameUSer + ", because file already exist");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            root.add(userDir);
+        } else {
+            System.out.println("Dir client has exist");
+        }
+
+    }
     private void initializeDirForServer() {
         File theDir = new File("/home/huygrogbro/MailServer");
         if(!theDir.exists()) {
@@ -33,6 +70,14 @@ public class ServerUI extends JFrame {
             System.out.println("Create dir success");
         } else {
             System.out.println("Dir has exist");
+        }
+    }
+    private void initializeSocketForServer() {
+        try {
+            serverSocket = new Server();
+            jt.append("Server running...");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
     public ServerUI() {
@@ -82,5 +127,6 @@ public class ServerUI extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+        initializeSocketForServer();
     }
 }
