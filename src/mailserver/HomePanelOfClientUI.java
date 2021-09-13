@@ -6,6 +6,7 @@
 package mailserver;
 
 import ServerAndClient.Client;
+import ServerAndClient.ManInTheMiddle;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -41,11 +42,16 @@ public class HomePanelOfClientUI extends JPanel{
 	private JList list2;
 	private Client clientCreate;
 	private void initializeSocket() {
+		Socket socketClient = null;
 		try {
-			clientCreate = new Client(lgPanelOfClientUI.getUserName().getText());
+			socketClient = new Socket("localhost", 1234);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		clientCreate = new Client(lgPanelOfClientUI.getUserName().getText());
+		ManInTheMiddle testSend = new ManInTheMiddle(socketClient, clientCreate);
+		testSend.sendToServer();
+		System.out.println("Create success in home user panel, client:  " + clientCreate);
 	}
 	public HomePanelOfClientUI(LoginPanelOfClientUI lgPanel){
 		lgPanelOfClientUI = lgPanel;

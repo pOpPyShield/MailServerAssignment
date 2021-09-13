@@ -73,13 +73,9 @@ public class ServerUI extends JFrame {
         }
     }
     private void initializeSocketForServer() {
-        try {
-            serverSocket = new Server();
-            jt.append("Server running...");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            serverSocket = new Server(jt, displayPort, displayIp);
     }
+
     public ServerUI() {
         initializeDirForServer();
         setTitle("Server");

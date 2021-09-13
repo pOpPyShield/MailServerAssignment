@@ -6,22 +6,21 @@
 package ServerAndClient;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.Socket;
 
 /**
  *
  * @author huygrogbro
  */
-public class Client extends Socket{
+public class Client implements Serializable {
     private String nameUser;
 
-    public Client(String nameUserArg) throws IOException {
-        super("localhost",1234);
+    public Client(String nameUserArg){
         nameUser = nameUserArg;
     }
 
-    public Client() {
-    }
+    public Client() {}
     @Override
     public String toString() {
         return nameUser;
