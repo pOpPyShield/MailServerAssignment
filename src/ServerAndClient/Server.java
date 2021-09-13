@@ -9,13 +9,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
 public class Server {
     private static HashMap<Client, Socket> clients = new HashMap<Client, Socket>();
     private ServerSocket srvSocket;
     private JTextArea displayStatusServer;
     private JLabel displayPortServer;
     private JLabel displayIpServer;
-
+    public boolean hasNewUser;
     //For display
     private DefaultMutableTreeNode root;
     private DefaultTreeModel model;
@@ -48,8 +50,11 @@ public class Server {
                 ClientHandler clientSock = new ClientHandler(s);
                 clientSock.getClientSend();
                 System.out.println("Accept user " + clients.keySet());
-                addToTree(clientSock.getClient());
+
                 System.out.println("Socket: " + clients.values());
+                addToTree(clientSock.getClient());
+                hasNewUser = true;
+                new Thread(clientSock).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -60,7 +65,7 @@ public class Server {
     private void writeToFile(String pathToFile) {
         try {
             FileWriter myWriter = new FileWriter(pathToFile);
-            myWriter.write("Thank you for using this service. we hope that you will feel comfortabl........");
+            myWriter.write("Thank you for using this service. we hope that you will feel comfortable........");
             myWriter.close();
             System.out.println("Successfully wrote to the file");
         } catch (IOException e) {
@@ -105,7 +110,26 @@ public class Server {
             displayStatusServer.append("Dir server has exist. \n");
         }
     }
-    private class ClientHandler  {
+
+    private void sendHashMapOverSocket(Socket client) {
+        try {
+            ObjectOutputStream objOutputStream = new ObjectOutputStream(client.getOutputStream());
+            System.out.println(client);
+            objOutputStream.writeObject(clients);
+            objOutputStream.flush();
+            objOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void sendToClient() {
+        int  count = 0;
+        for(Map.Entry<Client, Socket> set : clients.entrySet()) {
+            System.out.println(count + "." + set.getKey() + " = " + set.getValue());
+            sendHashMapOverSocket(set.getValue());
+        }
+    }
+    private class ClientHandler  implements Runnable{
         private final Socket clientSocket;
         private Client client;
         public ClientHandler(Socket clientSocket) {
@@ -131,5 +155,22 @@ public class Server {
         public Client getClient() {
             return client;
         }
+
+        @Override
+        public void run() {
+            boolean ok = true;
+            while (ok) {
+                if(hasNewUser) {
+                    //sendToClient();
+                    notifyStatusChanged();
+                    hasNewUser = false;
+                    ok = false;
+                }
+            }
+        }
+    }
+
+    public void notifyStatusChanged() {
+        System.out.println("notifyStatusChange -- ");
     }
 }

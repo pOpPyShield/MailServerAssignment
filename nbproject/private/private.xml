@@ -6,8 +6,11 @@
             <file>file:/home/huygrogbro/NetBeansProjects/MailServer/src/mailserver/HomePanelOfClientUI.java</file>
             <file>file:/home/huygrogbro/NetBeansProjects/MailServer/src/mailserver/LoginPanelOfClientUI.java</file>
             <file>file:/home/huygrogbro/NetBeansProjects/MailServer/src/ButtonActionListener/ClienttListener.java</file>
+            <file>file:/home/huygrogbro/NetBeansProjects/MailServer/src/mailserver/ClienttListener.java</file>
             <file>file:/home/huygrogbro/NetBeansProjects/MailServer/src/ServerAndClient/Client.java</file>
             <file>file:/home/huygrogbro/NetBeansProjects/MailServer/src/mailserver/MailServer.java</file>
+            <file>file:/home/huygrogbro/NetBeansProjects/MailServer/src/ServerUI/RunServer.java</file>
+            <file>file:/home/huygrogbro/NetBeansProjects/MailServer/src/ServerUI/ServerUI.java</file>
             <file>file:/home/huygrogbro/NetBeansProjects/MailServer/src/mailserver/ClientUI.java</file>
         </group>
     </open-files>

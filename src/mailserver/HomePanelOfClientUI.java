@@ -16,10 +16,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -52,6 +54,9 @@ public class HomePanelOfClientUI extends JPanel{
 	//file compare
 	private File[] fileCompare;
 	private Client clientCreate;
+
+	//ManInTheMiddle
+	private ManInTheMiddle mITM;
 	private void initializeSocket() {
 		Socket socketClient = null;
 		try {
@@ -60,8 +65,8 @@ public class HomePanelOfClientUI extends JPanel{
 			e.printStackTrace();
 		}
 		clientCreate = new Client(lgPanelOfClientUI.getUserName().getText());
-		ManInTheMiddle testSend = new ManInTheMiddle(socketClient, clientCreate);
-		testSend.sendToServer();
+		mITM = new ManInTheMiddle(socketClient, clientCreate);
+		mITM.sendToServer();
 		System.out.println("Create success in home user panel, client:  " + clientCreate);
 	}
 	private void getFileFromDirUSer() {
@@ -159,7 +164,9 @@ public class HomePanelOfClientUI extends JPanel{
 							typeOf.setText("Email: ");
 							list.clearSelection();
 							for(int i = 0; i<displayEmail.size();i++) {
-
+								if(selectedItem.equals(FilenameUtils.getBaseName(fileCompare[i].getName()))) {
+									jt.append(readFile(fileCompare[i]));
+								}
 							}
 							nameOfFriend.setText(selectedItem);
 						}
@@ -172,5 +179,19 @@ public class HomePanelOfClientUI extends JPanel{
 			panelCenter.add(panelRight, BorderLayout.LINE_END);
 		
 		add(panelCenter, BorderLayout.CENTER);
+	}
+	private String readFile(File fileRead) {
+		String fileContent = "";
+		try {
+			Scanner myReader = new Scanner(fileRead);
+			while (myReader.hasNextLine()) {
+				fileContent = myReader.nextLine();
+				System.out.println(fileContent);
+			}
+			myReader.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return fileContent;
 	}
 }
