@@ -6,15 +6,20 @@
 package mailserver;
 
 import ServerAndClient.Client;
+import ServerAndClient.FileCustom;
 import ServerAndClient.ManInTheMiddle;
+import org.apache.commons.io.FilenameUtils;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -39,7 +44,13 @@ public class HomePanelOfClientUI extends JPanel{
 	private JTextArea jt;
 	private JTextArea tf;
 	private JList list;
+
+	//Email of user
 	private JList list2;
+	//display email
+	private ArrayList<String> displayEmail;
+	//file compare
+	private File[] fileCompare;
 	private Client clientCreate;
 	private void initializeSocket() {
 		Socket socketClient = null;
@@ -52,6 +63,21 @@ public class HomePanelOfClientUI extends JPanel{
 		ManInTheMiddle testSend = new ManInTheMiddle(socketClient, clientCreate);
 		testSend.sendToServer();
 		System.out.println("Create success in home user panel, client:  " + clientCreate);
+	}
+	private void getFileFromDirUSer() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		displayEmail = new ArrayList<>();
+		fileCompare = new File("/home/huygrogbro/MailServer/" + lgPanelOfClientUI.getUserName().getText()).listFiles();
+		for(File file : fileCompare) {
+			if(file.isFile()) {
+				System.out.println(file);
+				displayEmail.add(FilenameUtils.getBaseName(file.getName()));
+			}
+		}
 	}
 	public HomePanelOfClientUI(LoginPanelOfClientUI lgPanel){
 		lgPanelOfClientUI = lgPanel;
@@ -103,8 +129,8 @@ public class HomePanelOfClientUI extends JPanel{
 				String categories[] = {"Household", "Office", "Extended Family", "Company (US)", "Company (World)", "Team", "Will", "Birthday Card List", "High School", "Country", "Continent", "Planet"};
 				list = new JList(categories);
 
-				String categories2[] = {"Household", "Office", "Extended Family", "Company (US)", "Company (World)", "Team", "Will", "Birthday Card List", "High School", "Country", "Continent", "Planet"};
-				list2 = new JList(categories2);
+				getFileFromDirUSer();
+				list2 = new JList(displayEmail.toArray());
 				JPanel panelFriend = new JPanel();
 				panelFriend.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 				panelFriend.setLayout(new BorderLayout(10,0));
@@ -132,6 +158,9 @@ public class HomePanelOfClientUI extends JPanel{
 							String selectedItem = (String) list2.getSelectedValue();
 							typeOf.setText("Email: ");
 							list.clearSelection();
+							for(int i = 0; i<displayEmail.size();i++) {
+
+							}
 							nameOfFriend.setText(selectedItem);
 						}
 					}

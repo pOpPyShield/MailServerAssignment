@@ -1,29 +1,33 @@
 package ServerAndClient;
 
 import javax.swing.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 public class Server {
     private static HashMap<Client, Socket> clients = new HashMap<Client, Socket>();
     private ServerSocket srvSocket;
     private JTextArea displayStatusServer;
     private JLabel displayPortServer;
     private JLabel displayIpServer;
-    public Server(JTextArea displayStatus, JLabel displayPort, JLabel displayIp) {
+
+    //For display
+    private DefaultMutableTreeNode root;
+    private DefaultTreeModel model;
+    public Server(JTextArea displayStatus, JLabel displayPort, JLabel displayIp, DefaultMutableTreeNode treeArg, DefaultTreeModel treeModel) {
         displayStatusServer = displayStatus;
         displayPortServer = displayPort;
         displayIpServer = displayIp;
-        runningServer();
+        root = treeArg;
+        model = treeModel;
     }
 
-    private void runningServer() {
+    public void runningServer() {
         try {
             srvSocket = new ServerSocket(1234);
         } catch (IOException e) {
@@ -32,6 +36,7 @@ public class Server {
         displayStatusServer.append("Server started at port: " + srvSocket.getLocalPort() + "\n");
         displayIpServer.setText(srvSocket.getInetAddress().toString());
         displayPortServer.setText(String.valueOf(srvSocket.getLocalPort()));
+        initializeDirForServer();
         while (true) {
             try {
                 Thread.sleep(100);
@@ -43,6 +48,7 @@ public class Server {
                 ClientHandler clientSock = new ClientHandler(s);
                 clientSock.getClientSend();
                 System.out.println("Accept user " + clients.keySet());
+                addToTree(clientSock.getClient());
                 System.out.println("Socket: " + clients.values());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -51,7 +57,54 @@ public class Server {
 
         }
     }
+    private void writeToFile(String pathToFile) {
+        try {
+            FileWriter myWriter = new FileWriter(pathToFile);
+            myWriter.write("Thank you for using this service. we hope that you will feel comfortabl........");
+            myWriter.close();
+            System.out.println("Successfully wrote to the file");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+    }
+    public void addToTree(Client nameUSer) {
+        DefaultMutableTreeNode userDir = new DefaultMutableTreeNode(nameUSer);
+        File theDir = new File("/home/huygrogbro/MailServer/" + nameUSer);
+        if(!theDir.exists()) {
+            theDir.mkdir();
+            String welcomFilePath = "/home/huygrogbro/MailServer/" + nameUSer + "/new_email.txt";
+            FileCustom welcomFile = new FileCustom(welcomFilePath);
+            try {
+                if(welcomFile.createNewFile()) {
+                    writeToFile(welcomFilePath);
+                    displayStatusServer.append("File created for: " + nameUSer + "\n");
+                } else {
+                    displayStatusServer.append("Create failed for: " + nameUSer + ", because file already exist\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            addDirAndFile(userDir, new DefaultMutableTreeNode(welcomFile));
+        } else {
+            System.out.println("Dir client has exist");
+        }
+
+    }
+    private void addDirAndFile(DefaultMutableTreeNode nodeParent, DefaultMutableTreeNode nodeChild) {
+        nodeParent.add(nodeChild);
+        root.add(nodeParent);
+        model.reload(root);
+    }
+    private void initializeDirForServer() {
+        File theDir = new File("/home/huygrogbro/MailServer");
+        if(!theDir.exists()) {
+            theDir.mkdir();
+            displayStatusServer.append("Create dir for server success.\n");
+        } else {
+            displayStatusServer.append("Dir server has exist. \n");
+        }
+    }
     private class ClientHandler  {
         private final Socket clientSocket;
         private Client client;
@@ -75,5 +128,8 @@ public class Server {
             }
         }
 
+        public Client getClient() {
+            return client;
+        }
     }
 }
